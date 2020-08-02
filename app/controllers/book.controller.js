@@ -145,6 +145,8 @@ exports.getBooksOnShelfWithType = (req, res) => {
     });
 };
 
+// TODO: need to consider if we want to include OnHold here or not - or give the user an option to not select that
+// If selected, do we do a different query? Or select both separately and combine the lists?
 // Get random book on WantToRead shelf with specific book type
 exports.getRandomBookWithType = (req, res) => {
     // Validate bookType was provided and is valid value
