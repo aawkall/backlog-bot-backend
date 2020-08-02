@@ -1,0 +1,16 @@
+.idea/
+
+# File-based project format
+*.iws
+
+# IntelliJ
+out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# NPM stuff
+node_modules/
+
+# Secure stuffs
+secure-do-not-commit.txt
