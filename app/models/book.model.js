@@ -1,6 +1,6 @@
-// TODO: consider adding a column for notes like in games, that allows you to have "first" to know when to not select a book yet
-
 const sql = require('./db.js');
+
+// TODO do we need getAllByBookType, regardless of shelf? for now, it requires shelf
 
 // Constructor
 const Book = function(book) {
@@ -68,7 +68,7 @@ Book.updateById = (bookId, book, result) => {
                 return;
             }
 
-            if (res.affectedRows == 0) {
+            if (res.affectedRows === 0) {
                 // Book with that ID was not found
                 result({ kind: 'not_found' }, null);
                 return;
@@ -88,7 +88,7 @@ Book.delete = (bookId, result) => {
             return;
         }
 
-        if (res.affectedRows == 0) {
+        if (res.affectedRows === 0) {
             // Book with that bookId was not found
             result({ kind: 'not_found' }, null);
             return;
@@ -99,7 +99,7 @@ Book.delete = (bookId, result) => {
     });
 };
 
-// FindAllByShelf
+// Find all books on a particular shelf
 Book.findAllByShelf = (shelf, result) => {
     sql.query('SELECT * FROM books WHERE shelf = ?', shelf, (err, res) => {
         if (err) {
@@ -119,7 +119,7 @@ Book.findAllByShelf = (shelf, result) => {
     });
 };
 
-// FindAllByBookTypeAndShelf
+// Find all books on a particular shelf with given book type
 Book.findAllByBookTypeAndShelf = (bookType, shelf, result) => {
     sql.query('SELECT * FROM books WHERE book_type = ? AND shelf = ?', [bookType, shelf], (err, res) => {
         if (err) {
@@ -134,12 +134,12 @@ Book.findAllByBookTypeAndShelf = (bookType, shelf, result) => {
             return;
         }
 
-        // No books of book_type were found
+        // No books of book_type on shelf were found
         result({ kind: 'not_found' }, null);
     });
 };
 
-// FindRandomByBookTypeAndShelf
+// Pick a random book from the given shelf with the chosen book type
 Book.findRandomByBookTypeAndShelf = (bookType, shelf, result) => {
     sql.query('SELECT * FROM books WHERE book_type = ? AND shelf = ? ORDER BY RAND() LIMIT 1', [bookType, shelf], (err, res) => {
         if (err) {
@@ -154,7 +154,7 @@ Book.findRandomByBookTypeAndShelf = (bookType, shelf, result) => {
             return;
         }
 
-        // No books of book_type were found
+        // No books on the given shelf and book type were found
         result({ kind: 'not_found' }, null);
     });
 };

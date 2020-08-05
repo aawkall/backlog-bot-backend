@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 
 // Add in routes for Book controller
 require('./app/routes/book.routes.js')(app);
+require('./app/routes/game.routes.js')(app);
 
 // Set port, and start listening for requests
 app.listen(3000, () => {

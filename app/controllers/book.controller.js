@@ -3,9 +3,6 @@ const { validationResult } = require('express-validator');
 
 // TODO: consider adding method that can take in multiple book types for the random selector
 
-const shelves = ['currentlyreading', 'read', 'onhold', 'wanttoread'];
-const bookTypes = ['fiction', 'nonfiction', 'graphicnovel', 'selfhelp', 'professional'];
-
 // Create new Book
 exports.createNewBook = (req, res) => {
     // Check for validation errors
@@ -62,7 +59,9 @@ exports.updateBook = (req, res) => {
     // Update Book in DB
     Book.updateById(req.params.bookId, new Book(req.body), (err, data) => {
         if (err) {
-            if (err.kind === 'not_found') {
+            if (err.code === 'ER_DUP_ENTRY')
+                res.status(409).send({ message: 'Book with the ISBN already exists: ' + req.body.isbn });
+            else if (err.kind === 'not_found') {
                 res.status(404).send( {
                     message: 'Book not found with id: ' + req.params.bookId
                 });
@@ -150,6 +149,7 @@ exports.getBooksOnShelfWithType = (req, res) => {
 // TODO: need to consider if we want to include OnHold here or not - or give the user an option to not select that
 // Add query parameter for OnHold = true, then use this to pass to the DB model method to add
 // "shelf = 'WantToRead' OR shelf = 'OnHold'" to the query. For now, it will only do WantToRead
+
 // Get random book on WantToRead shelf with specific book type
 exports.getRandomBookWithType = (req, res) => {
     // Check for validation errors
