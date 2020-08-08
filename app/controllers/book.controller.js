@@ -122,6 +122,30 @@ exports.getBooksOnShelf = (req, res) => {
     });
 };
 
+// Get all books with a specific book type
+exports.getBooksByBookType = (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Get all Books with given bookType from DB
+    Book.findAllByBookType(req.params.bookType, (err, data) => {
+        if (err) {
+            if (err.kind === 'not_found') {
+                res.status(404).send( {
+                    message: 'No books found with bookType: ' + req.params.bookType
+                });
+            } else {
+                res.status(500).send({
+                    message: 'Error retrieving books with bookType: '+ req.params.bookType
+                });
+            }
+        } else res.send(data);
+    });
+}
+
 // Get all books on a particular shelf, filtered by book type
 exports.getBooksOnShelfWithType = (req, res) => {
     // Check for validation errors

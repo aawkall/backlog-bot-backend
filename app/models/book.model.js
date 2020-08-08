@@ -15,6 +15,17 @@ const Book = function(book) {
     this.percentage_complete = book.percentage_complete;
     this.rating = book.rating;
     this.notes = book.notes;
+
+    // Set defaults if not provided - for optional fields
+    // If field is not provided in an update / PUT, it will be overwritten
+    if (this.cover_url == null)
+        this.cover_url = '';
+    if (this.current_page == null)
+        this.current_page = 0;
+    if (this.rating == null)
+        this.rating = -1.0;
+    if (this.notes == null)
+        this.notes = '';
 };
 
 // Create new Book
@@ -57,6 +68,7 @@ Book.findById = (bookId, result) => {
 
 // Update Book by bookId
 Book.updateById = (bookId, book, result) => {
+    // TODO - need to set current_page to 0 if comes in as null
     book.percentage_complete = Math.round(book.current_page / book.total_pages * 100);
     sql.query(
         'UPDATE books SET title = ?, author = ?, isbn = ?, cover_url = ?, book_type = ?, shelf = ?, current_page = ?, total_pages = ?, percentage_complete = ?, rating = ?, notes = ? WHERE id = ?',
@@ -115,6 +127,26 @@ Book.findAllByShelf = (shelf, result) => {
         }
 
         // No books on shelf were found
+        result({ kind: 'not_found' }, null);
+    });
+};
+
+// Find all books with a specific book_type
+Book.findAllByBookType = (bookType, result) => {
+    sql.query('SELECT * FROM books WHERE book_type = ?', bookType, (err, res) => {
+        if (err) {
+            console.log('Error finding all books with bookType: ', err);
+            result(err, null);
+            return;
+        }
+
+        if (res.length) {
+            console.log('Found books with bookType: ', res);
+            result(null, res);
+            return;
+        }
+
+        // No books on bookType were found
         result({ kind: 'not_found' }, null);
     });
 };

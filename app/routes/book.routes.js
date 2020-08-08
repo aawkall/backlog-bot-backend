@@ -4,6 +4,7 @@ const bookValidator = require('./book.validator.js');
    /books: POST (create)
    /books/:bookId: GET, PUT (update), DELETE
    /books/shelf/:shelf: GET (by shelf)
+   /books/bookType/:bookTYpe: GET (by bookType)
    /books/shelf/:shelf/bookType/:bookType: GET (by shelf and bookType)
    /books/random/bookType/:bookType GET (from WantToRead shelf with bookType)
 */
@@ -35,6 +36,11 @@ module.exports = app => {
     app.get('/books/shelf/:shelf',
         bookValidator.validateShelf,
         books.getBooksOnShelf);
+
+    // Get all books with a particular bookType
+    app.get('/books/bookType/:bookType',
+        bookValidator.validateBookType,
+        books.getBooksByBookType);
 
     // Get all books on a particular shelf, filtered by book type
     app.get('/books/shelf/:shelf/bookType/:bookType',
