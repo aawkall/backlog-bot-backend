@@ -3,6 +3,8 @@ const bookValidator = require('./book.validator.js');
 /* Routes:
    /books: POST (create)
    /books/:bookId: GET, PUT (update), DELETE
+   /books/:bookId/shelf: PUT (update shelf only)
+   /books/:bookId/rating: PUT (update rating only)
    /books/shelf/:shelf: GET (by shelf)
    /books/bookType/:bookTYpe: GET (by bookType)
    /books/shelf/:shelf/bookType/:bookType: GET (by shelf and bookType)
@@ -26,6 +28,16 @@ module.exports = app => {
     app.put('/books/:bookId',
         bookValidator.validateBookId, bookValidator.validateBook,
         books.updateBook);
+
+    // Update Book - shelf only
+    app.put('/books/:bookId/shelf',
+        bookValidator.validateBookId, bookValidator.validateUpdateShelf,
+        books.updateBookShelf);
+
+    // Update Book - rating only
+    app.put('/books/:bookId/rating',
+        bookValidator.validateBookId, bookValidator.validateUpdateRating,
+        books.updateBookRating);
 
     // Delete Book by bookId
     app.delete('/books/:bookId',

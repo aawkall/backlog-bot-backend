@@ -74,6 +74,52 @@ exports.updateGame = (req, res) => {
     });
 };
 
+// Update Game - status only
+exports.updateGameStatus = (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    Game.updateStatusById(req.params.gameId, req.body.status, (err, data) => {
+        if (err) {
+            if (err.kind === 'not_found') {
+                res.status(404).send( {
+                    message: 'Game not found with id: ' + req.params.gameId
+                });
+            } else {
+                res.status(500).send({
+                    message: 'Error updating status for game with id: '+ req.params.gameId
+                });
+            }
+        } else res.send(data);
+    });
+};
+
+// Update Game - rating only
+exports.updateGameRating = (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    Game.updateRatingById(req.params.gameId, req.body.rating, (err, data) => {
+        if (err) {
+            if (err.kind === 'not_found') {
+                res.status(404).send( {
+                    message: 'Game not found with id: ' + req.params.gameId
+                });
+            } else {
+                res.status(500).send({
+                    message: 'Error updating rating for game with id: '+ req.params.gameId
+                });
+            }
+        } else res.send(data);
+    });
+};
+
 // Delete Game by gameId
 exports.deleteGame = (req, res) => {
     // Check for validation errors

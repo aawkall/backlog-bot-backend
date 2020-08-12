@@ -74,6 +74,54 @@ exports.updateBook = (req, res) => {
     });
 };
 
+// Update Book - shelf only
+exports.updateBookShelf = (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Update shelf for book in DB
+    Book.updateShelfById(req.params.bookId, req.body.shelf, (err, data) => {
+        if (err) {
+            if (err.kind === 'not_found') {
+                res.status(404).send( {
+                    message: 'Book not found with id: ' + req.params.bookId
+                });
+            } else {
+                res.status(500).send({
+                    message: 'Error updating shelf for book with id: '+ req.params.bookId
+                });
+            }
+        } else res.send(data);
+    });
+};
+
+// Update Book - rating only
+exports.updateBookRating = (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Update rating for book in DB
+    Book.updateRatingById(req.params.bookId, req.body.rating, (err, data) => {
+        if (err) {
+            if (err.kind === 'not_found') {
+                res.status(404).send( {
+                    message: 'Book not found with id: ' + req.params.bookId
+                });
+            } else {
+                res.status(500).send({
+                    message: 'Error updating rating for book with id: '+ req.params.bookId
+                });
+            }
+        } else res.send(data);
+    });
+};
+
 // Delete Book by bookId
 exports.deleteBook = (req, res) => {
     // Check for validation errors

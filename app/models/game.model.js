@@ -82,6 +82,48 @@ Game.updateById = (gameId, game, result) => {
     });
 };
 
+// Update status for Game with gameId
+Game.updateStatusById = (gameId, status, result) => {
+    sql.query(
+        'UPDATE games SET status = ? WHERE id = ?', [status, gameId], (err, res) => {
+            if (err) {
+                console.log('Error updating status for game: ', err);
+                result(null, err);
+                return;
+            }
+
+            if (res.affectedRows === 0) {
+                // Game with that ID was not found
+                result({ kind: 'not_found' }, null);
+                return;
+            }
+
+            console.log('Updated status for game: ', { id: gameId, status });
+            result(null, { id: gameId, status });
+        });
+};
+
+// Update rating for Game with gameId
+Game.updateRatingById = (gameId, rating, result) => {
+    sql.query(
+        'UPDATE games SET rating = ? WHERE id = ?', [rating, gameId], (err, res) => {
+            if (err) {
+                console.log('Error updating rating for game: ', err);
+                result(null, err);
+                return;
+            }
+
+            if (res.affectedRows === 0) {
+                // Game with that ID was not found
+                result({ kind: 'not_found' }, null);
+                return;
+            }
+
+            console.log('Updated rating for game: ', { id: gameId, rating });
+            result(null, { id: gameId, rating });
+        });
+};
+
 // Delete Game by gameId
 Game.delete = (gameId, result) => {
     sql.query('DELETE FROM games WHERE id = ?', gameId, (err, res) => {

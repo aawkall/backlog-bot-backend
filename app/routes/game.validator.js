@@ -57,6 +57,37 @@ exports.validatePlatformType = checkSchema( {
     }
 });
 
+exports.validateUpdateStatus = checkSchema({
+    status: {
+        in: ['body'],
+        exists: true,
+        errorMessage: 'status cannot be empty',
+        customSanitizer: {
+            options: (value, { req }) => {
+                if (req.body.status)
+                    return req.body.status.toLowerCase().replace(/\s/g, '');
+            }
+        },
+        isIn: {
+            errorMessage: 'status must be one of: backlog, currentlyplaying, completed, onhold',
+            options: [statuses]
+        }
+    }
+});
+
+exports.validateUpdateRating = checkSchema({
+    rating: {
+        in: ['body'],
+        exists: true,
+        errorMessage: 'rating cannot be empty',
+        isInt: {
+            errorMessage: 'rating must be between 0 and 100',
+            options: { min: 0, max: 100 }
+        },
+        toInt: true
+    }
+});
+
 exports.validateGame = checkSchema( {
     title: {
         in: ['body'],

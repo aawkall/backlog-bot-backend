@@ -91,6 +91,48 @@ Book.updateById = (bookId, book, result) => {
     });
 };
 
+// Update shelf for Book with bookId
+Book.updateShelfById = (bookId, shelf, result) => {
+    sql.query(
+        'UPDATE books SET shelf = ? WHERE id = ?', [shelf, bookId], (err, res) => {
+            if (err) {
+                console.log('Error updating shelf for book: ', err);
+                result(null, err);
+                return;
+            }
+
+            if (res.affectedRows === 0) {
+                // Book with that ID was not found
+                result({ kind: 'not_found' }, null);
+                return;
+            }
+
+            console.log('Updated shelf for book: ', { id: bookId, shelf });
+            result(null, { id: bookId, shelf });
+    });
+};
+
+// Update rating for Book with bookId
+Book.updateRatingById = (bookId, rating, result) => {
+    sql.query(
+        'UPDATE books SET rating = ? WHERE id = ?', [rating, bookId], (err, res) => {
+            if (err) {
+                console.log('Error updating rating for book: ', err);
+                result(null, err);
+                return;
+            }
+
+            if (res.affectedRows === 0) {
+                // Book with that ID was not found
+                result({ kind: 'not_found' }, null);
+                return;
+            }
+
+            console.log('Updated rating for book: ', { id: bookId, rating });
+            result(null, { id: bookId, rating });
+        });
+};
+
 // Delete Book by bookId
 Book.delete = (bookId, result) => {
     sql.query('DELETE FROM books WHERE id = ?', bookId, (err, res) => {

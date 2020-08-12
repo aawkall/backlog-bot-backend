@@ -3,6 +3,8 @@ const gameValidator = require('./game.validator.js');
 /* Routes:
    /games: POST (create)
    /games/:gameId: GET, PUT (update), DELETE
+   /games/:gameId/status: PUT (update status only)
+   /games/:gameId/rating: PUT (update rating only)
    /games/status/:status: GET (by status)
    /games/platform/:platform: GET (by platform)
    /games/platformType/:platformType: GET (by platformType)
@@ -23,12 +25,22 @@ module.exports = app => {
     // Get Game with gameId
     app.get('/games/:gameId',
         gameValidator.validateGameId,
-        games.getGameById);
+        games.getGameById);As
 
     // Update Game by gameId
     app.put('/games/:gameId',
         gameValidator.validateGameId, gameValidator.validateGame,
         games.updateGame);
+
+    // Update Game - status only
+    app.put('/games/:gameId/status',
+        gameValidator.validateGameId, gameValidator.validateUpdateStatus,
+        games.updateGameStatus);
+
+    // Update Game - rating only
+    app.put('/games/:gameId/rating',
+        gameValidator.validateGameId, gameValidator.validateUpdateRating,
+        games.updateGameRating);
 
     // Delete Game by gameId
     app.delete('/games/:gameId',

@@ -10,7 +10,7 @@ exports.validateBookId = checkSchema( {
        errorMessage: 'bookId must be an integer',
        isInt: true
    }
-});
+})
 
 exports.validateShelf = checkSchema( {
     shelf: {
@@ -39,6 +39,37 @@ exports.validateBookType = checkSchema( {
             errorMessage: 'bookType must be one of: fiction, nonfiction, graphicnovel, selfhelp, or professional',
             options: [bookTypes]
         }
+    }
+});
+
+exports.validateUpdateShelf = checkSchema({
+    shelf: {
+        in: ['body'],
+        exists: true,
+        errorMessage: 'shelf cannot be empty',
+        customSanitizer: {
+            options: (value, { req }) => {
+                if (req.body.shelf)
+                    return req.body.shelf.toLowerCase();
+            }
+        },
+        isIn: {
+            errorMessage: 'shelf must be one of: currentlyreading, read, onhold, or wanttoread',
+            options: [shelves]
+        }
+    }
+});
+
+exports.validateUpdateRating = checkSchema({
+    rating: {
+        in: ['body'],
+        exists: true,
+        errorMessage: 'rating cannot be empty',
+        isIn: {
+            errorMessage: 'rating must be one of: 0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0',
+            options: [ratings]
+        },
+        toFloat: true
     }
 });
 
