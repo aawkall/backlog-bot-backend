@@ -2,7 +2,6 @@ const { checkSchema } = require('express-validator');
 
 const platforms = ['nintendo3ds', '3dsemulation', 'pcemulation', 'applearcade', 'ios', 'oculusquest', 'pc', 'ps3', 'ps4', 'vitaemulated', 'psp', 'psvita', 'psvr', 'nintendoswitch', 'wii', 'wiiu', 'xboxone'];
 const platform_types =  ['pc', 'console', 'vr', 'handheld', 'mobile'];
-const statuses = ['backlog', 'currentlyplaying', 'completed', 'onhold'];
 
 exports.validateGameId = checkSchema( {
    gameId: {
@@ -10,21 +9,6 @@ exports.validateGameId = checkSchema( {
        errorMessage: 'gameId must be an integer',
        isInt: true
    }
-});
-
-exports.validateStatus = checkSchema( {
-    shelf: {
-        in: ['params'],
-        customSanitizer: {
-            options: (value, { req }) => {
-                return req.params.status.toLowerCase();
-            }
-        },
-        isIn: {
-            errorMessage: 'status must be one of: backlog, currentlyplaying, completed, onhold',
-            options: [statuses]
-        }
-    }
 });
 
 exports.validatePlatform = checkSchema( {
@@ -54,37 +38,6 @@ exports.validatePlatformType = checkSchema( {
             errorMessage: 'platformType must be one of: pc, console, vr, handheld, mobile',
             options: [platform_types]
         }
-    }
-});
-
-exports.validateUpdateStatus = checkSchema({
-    status: {
-        in: ['body'],
-        exists: true,
-        errorMessage: 'status cannot be empty',
-        customSanitizer: {
-            options: (value, { req }) => {
-                if (req.body.status)
-                    return req.body.status.toLowerCase().replace(/\s/g, '');
-            }
-        },
-        isIn: {
-            errorMessage: 'status must be one of: backlog, currentlyplaying, completed, onhold',
-            options: [statuses]
-        }
-    }
-});
-
-exports.validateUpdateRating = checkSchema({
-    rating: {
-        in: ['body'],
-        exists: true,
-        errorMessage: 'rating cannot be empty',
-        isInt: {
-            errorMessage: 'rating must be between 0 and 100',
-            options: { min: 0, max: 100 }
-        },
-        toInt: true
     }
 });
 
@@ -124,34 +77,10 @@ exports.validateGame = checkSchema( {
             options: [platform_types]
         }
     },
-    status: {
-        in: ['body'],
-        exists: true,
-        errorMessage: 'status cannot be empty',
-        customSanitizer: {
-            options: (value, { req }) => {
-                if (req.body.status)
-                    return req.body.status.toLowerCase().replace(/\s/g, '');
-            }
-        },
-        isIn: {
-            errorMessage: 'status must be one of: backlog, currentlyplaying, completed, onhold',
-            options: [statuses]
-        }
-    },
     cover_url: {
         in: ['body'],
         optional: true,
         isURL: true,
         errorMessage: 'cover_url must be a valid URL'
-    },
-    rating: {
-        in: ['body'],
-        optional: true,
-        isInt: {
-            errorMessage: 'rating must be between 0 and 100',
-            options: { min: 0, max: 100 }
-        },
-        toInt: true
     }
 });
