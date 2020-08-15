@@ -25,7 +25,7 @@ module.exports = app => {
     // Get Game with gameId
     app.get('/games/:gameId',
         gameValidator.validateGameId,
-        games.getGameById);As
+        games.getGameById);
 
     // Update Game by gameId
     app.put('/games/:gameId',
